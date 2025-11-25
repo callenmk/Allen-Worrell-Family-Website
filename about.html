@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Our Family - Our Family Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, var(--green-light), var(--cream));
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--brown-dark);
+    }
+
+    .top-bar {
+      background: linear-gradient(90deg, var(--brown-dark), #6b4c33);
+      color: var(--cream);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .top-bar .brand {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .top-bar a.back {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .top-bar a.back:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .about-wrapper {
+      max-width: 1000px;
+      margin: 2rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    .about-hero {
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      padding: 1.8rem 1.6rem;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+      border-left: 6px solid var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .about-hero h1 {
+      margin: 0 0 0.4rem;
+    }
+
+    .about-hero p {
+      margin: 0;
+      color: #6a5a4a;
+      font-size: 0.98rem;
+    }
+
+    .about-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .about-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .story-block h2 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .story-block p {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+      color: #6a5a4a;
+    }
+
+    .ancestor-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+      padding: 1.2rem 1.1rem 1.4rem;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      border: 1px solid var(--brown-light);
+    }
+
+    .ancestor-card h2 {
+      margin-top: 0;
+      margin-bottom: 0.3rem;
+    }
+
+    .ancestor-card p {
+      margin-top: 0.2rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #6a5a4a;
+    }
+
+    .ancestor-photo {
+      width: 100%;
+      border-radius: 14px;
+      margin-bottom: 0.75rem;
+      border: 3px solid var(--gold);
+      object-fit: cover;
+      max-height: 260px;
+    }
+
+    .ancestor-caption {
+      font-size: 0.85rem;
+      color: #7a6a5a;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+
+    .values-section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 16px;
+      padding: 1.4rem 1.2rem 1.3rem;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      border: 1px solid rgba(199,177,153,0.9);
+    }
+
+    .values-section h2 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .values-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.6rem 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .values-list li::before {
+      content: "•";
+      margin-right: 0.4rem;
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="brand">Our Family Portal</div>
+    <a href="dashboard.html" class="back">← Back to Dashboard</a>
+  </header>
+
+  <div class="about-wrapper">
+    <section class="about-hero">
+      <h1>About Our Family</h1>
+      <p>
+        Every branch of our family has its own story, but our roots are shared. This page is a place to
+        honor where we come from and the people who came before us.
+      </p>
+    </section>
+
+    <section class="about-main">
+      <div class="story-block">
+        <h2>Our Story</h2>
+        <p>
+          [Write your family story here.] You might share where our family began, what places have been home
+          over the years, and how our traditions started. You can include memories of grandparents, great-
+          grandparents, and the values they passed down.
+        </p>
+        <p>
+          You can edit this text in <strong>about.html</strong> anytime to reflect more details, fun stories,
+          or new discoveries as the family learns more about our history.
+        </p>
+      </div>
+
+      <aside class="ancestor-card">
+        <h2>Our Ancestors</h2>
+        <!--
+          To use your own ancestor photo:
+          1. Upload the photo file to your GitHub repo (same place as about.html), for example: ancestors.jpg
+          2. Change the src below from "ancestor-photo.jpg" to your actual file name, like "ancestors.jpg"
+        -->
+        <img src="ancestor-photo.jpg" alt="Our ancestors" class="ancestor-photo" />
+        <div class="ancestor-caption">
+          [Add a short caption here about who is in the picture and roughly when/where it was taken.]
+        </div>
+        <p>
+          Use this space to describe the ancestor or group of ancestors in the photo. You might include their
+          names, where they lived, what they were known for, or a favorite family memory or story connected to them.
+        </p>
+      </aside>
+    </section>
+
+    <section class="values-section">
+      <h2>What We Stand For</h2>
+      <p>These are some of the values that keep our family rooted and connected:</p>
+      <ul class="values-list">
+        <li>[Example] Faith and gratitude in every season</li>
+        <li>[Example] Love that makes room for everyone</li>
+        <li>[Example] Laughter at every gathering</li>
+        <li>[Example] Respect for our elders and their stories</li>
+        <li>[Example] Helping hands in hard times</li>
+        <li>[Example] Pride in our heritage and roots</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
