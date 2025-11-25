@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Login - Our Family Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--green-light), var(--cream));
+      padding: 1rem;
+    }
+
+    .auth-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      border: 1px solid var(--brown-light);
+    }
+
+    .auth-card h1 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: var(--brown-dark);
+      text-align: center;
+    }
+
+    .auth-card p.subtext {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #6a5a4a;
+      font-size: 0.95rem;
+    }
+
+    .auth-card label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+      color: var(--brown-dark);
+    }
+
+    .auth-card input[type="password"] {
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #c4b6a5;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      box-sizing: border-box;
+    }
+
+    .auth-card .btn-primary {
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .auth-card .hint {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #7a6a5a;
+      text-align: center;
+    }
+
+    .auth-card .error {
+      display: none;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #b3261e;
+      background: #fdecea;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .back-link a {
+      color: var(--brown-dark);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h1>Family Login</h1>
+      <p class="subtext">Enter our shared family password to access photos, the family tree, and more.</p>
+
+      <div id="error" class="error">Incorrect password. Please try again.</div>
+
+      <form onsubmit="handleLogin(event)">
+        <label for="password">Family Password</label>
+        <input type="password" id="password" placeholder="Enter family password" required />
+        <button type="submit" class="btn-primary">Enter Family Portal</button>
+      </form>
+
+      <div class="hint">
+        Only family members who know the shared password can enter.
+      </div>
+
+      <div class="back-link">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Change this to whatever password you want to use
+    const FAMILY_PASSWORD = "family2025";
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const entered = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("error");
+
+      if (entered === FAMILY_PASSWORD) {
+        // On success, send them to the dashboard page (we'll create this next)
+        window.location.href = "dashboard.html";
+      } else {
+        errorBox.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
