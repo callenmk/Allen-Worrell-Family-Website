@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Allen / Worrell / Timmons / Barnes Family Tree</title>
+  <style>
+    :root {
+      --bg: #f5f5f8;
+      --card-bg: #ffffff;
+      --accent: #3b82f6;
+      --accent-soft: #dbeafe;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-soft: #4b5563;
+      --radius-lg: 14px;
+      --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f5f5f8 55%);
+      color: var(--text-main);
+    }
+
+    header {
+      padding: 2rem 1.25rem 1rem;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+    }
+
+    header p {
+      margin: 0 0 1rem;
+      color: var(--text-soft);
+      max-width: 60rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .controls button {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.9rem;
+      background: #ffffffcc;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(6px);
+    }
+
+    .controls button:hover {
+      background: #ffffff;
+      border-color: var(--accent-soft);
+    }
+
+    main {
+      padding: 0 1.25rem 2.5rem;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .generation {
+      margin-bottom: 2.25rem;
+    }
+
+    .generation h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .generation h2::before {
+      content: "";
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #22c55e);
+    }
+
+    .generation-label {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+    }
+
+    .person-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .person-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .person-inner {
+      padding: 1rem 1rem 1.1rem;
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .person-photo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: #e5e7eb;
+      border: 2px solid #e5e7eb;
+    }
+
+    .person-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .person-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .person-role {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .person-years {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .person-notes {
+      margin-top: 0.35rem;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .records-details {
+      grid-column: 1 / -1;
+      margin-top: 0.6rem;
+      background: #f9fafb;
+      border-radius: 0.9rem;
+      border: 1px dashed #e5e7eb;
+      padding: 0.4rem 0.75rem 0.5rem;
+    }
+
+    .records-details > summary {
+      cursor: pointer;
+      list-style: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .records-details > summary::before {
+      content: "📁";
+    }
+
+    .records-details[open] > summary::before {
+      content: "📂";
+    }
+
+    .records-details[open] {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+
+    .record-tags {
+      margin: 0.5rem 0 0.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      font-size: 1.05rem;
+    }
+
+    .record-tag {
+      cursor: default;
+    }
+
+    .records-details ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.85rem;
+    }
+
+    .records-details li {
+      margin-bottom: 0.1rem;
+    }
+
+    .upload-note {
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    details.children-block {
+      margin-top: 0.9rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 0.9rem;
+      border: 1px dashed #d1d5db;
+      background: #f9fafb;
+    }
+
+    details.children-block > summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .person-inner {
+        grid-template-columns: 56px 1fr;
+      }
+
+      .person-photo {
+        width: 56px;
+        height: 56px;
+      }
+    }
+  </style>
+  <script>
+    function expandAllRecords(open) {
+      document.querySelectorAll('.records-details').forEach(function (d) {
+        d.open = open;
+      });
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Allen / Worrell / Timmons / Barnes Family Tree</h1>
+    <p>
+      A working family history for Crystal and her relatives. Click each person's
+      <strong>Records &amp; Documents</strong> section to see placeholders for census, birth, marriage,
+      military, land, and newspaper records.
+    </p>
+    <div class="controls">
+      <button type="button" onclick="expandAllRecords(true)">📂 Expand all records</button>
+      <button type="button" onclick="expandAllRecords(false)">📁 Collapse all records</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Generation 0 – Great-Great-Great Grandparents -->
+    <section class="generation">
+      <h2>Generation 0 – Great-Great-Great Grandparents</h2>
+      <div class="generation-label">Earliest known ancestors on the Allen and Worrell lines.</div>
+
+      <div class="person-grid">
+        <!-- ISHAM ALLEN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="isham-allen.jpg" alt="Isham Allen" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Isham Allen</div>
+              <div class="person-role">Great-Great-Great Grandfather</div>
+              <div class="person-years">[Birth year – Death year]</div>
+              <div class="person-notes">Father of Sarah Allen (born 1848). [Add biography or historical notes.]</div>
+            </div>
+
+            <!-- Records & Documents block -->
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+              <div class="upload-note">You can also store file names or URLs here that point to PDFs or images.</div>
+            </details>
+          </div>
+        </article>
+
+        <!-- MARTHA ALLEN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="martha-allen.jpg" alt="Martha Allen" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Martha Allen</div>
+              <div class="person-role">Great-Great-Great Grandmother</div>
+              <div class="person-years">[Birth year – Death year]</div>
+              <div class="person-notes">Mother of Sarah Allen (born 1848). [Add biography or oral history.]</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+              <div class="upload-note">Note any documents you have or want to search for.</div>
+            </details>
+          </div>
+        </article>
+
+        <!-- JACK WORRELL -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="jack-worrell.jpg" alt="Jack Worrell" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Jack Worrell</div>
+              <div class="person-role">Great-Great-Great Grandfather</div>
+              <div class="person-years">Born 1800s – [Death unknown]</div>
+              <div class="person-notes">Father of Cora “Harriet” Worrell. Born in Southampton County, Boykins, VA.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <!-- HARRIET WORRELL -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="harriet-worrell.jpg" alt="Harriet Worrell" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Harriet Worrell</div>
+              <div class="person-role">Great-Great-Great Grandmother</div>
+              <div class="person-years">Born 1800s – [Death unknown]</div>
+              <div class="person-notes">Mother of Cora “Harriet” Worrell. Also from Boykins, VA.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Generation 1 – Great-Great Grandparents -->
+    <section class="generation">
+      <h2>Generation 1 – Great-Great Grandparents</h2>
+      <div class="generation-label">Children of the Great-Great-Great Grandparents.</div>
+
+      <div class="person-grid">
+        <!-- SARAH ALLEN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="sarah-allen-1848.jpg" alt="Sarah Allen" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Sarah Allen</div>
+              <div class="person-role">Great-Great Grandmother</div>
+              <div class="person-years">Born 1848 – [Death unknown]</div>
+              <div class="person-notes">Daughter of Isham and Martha Allen. Mother of Wylie Allen. Husband currently unknown.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <!-- CORA “HARRIET” WORRELL -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="cora-harriet-jordan.jpg" alt="Cora Harriet Worrell" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Cora “Harriet” Worrell</div>
+              <div class="person-role">Great-Great Grandmother</div>
+              <div class="person-years">[Birth year – Death year]</div>
+              <div class="person-notes">Daughter of Jack and Harriet Worrell. Later married Wylie Allen.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Generation 2 – Great Grandparents -->
+    <section class="generation">
+      <h2>Generation 2 – Great Grandparents</h2>
+      <div class="generation-label">This generation shows your great grandparents.</div>
+
+      <div class="person-grid">
+        <!-- WYLIE ALLEN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="wylie-allen.jpg" alt="Wylie Allen" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Wylie Allen</div>
+              <div class="person-role">Great Grandfather</div>
+              <div class="person-years">[Birth year – Death year]</div>
+              <div class="person-notes">Son of Sarah Allen. Husband of Cora “Harriet” Worrell. Father of the Allen/Jordan children listed in the block below.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <!-- CORA “HARRIET” WORRELL JORDAN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="cora-harriet-jordan.jpg" alt="Cora Harriet Jordan" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Cora “Harriet” Worrell Jordan</div>
+              <div class="person-role">Great Grandmother</div>
+              <div class="person-years">[Birth year – Death year]</div>
+              <div class="person-notes">Daughter of Jack and Harriet Worrell. Wife of Wylie Allen. Mother of Elizabeth, Rosa, Martha, Prenell, Austin, Alton, Mildred, Sarah Lee, and Deloris.</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+
+      <!-- Children of Wylie & Cora in one collapsible block -->
+      <details class="children-block">
+        <summary>Children of Wylie &amp; Cora (Harriet) Allen / Jordan</summary>
+        <div class="person-grid" style="margin-top: 0.75rem;">
+          <!-- Example child – Mildred -->
+          <article class="person-card">
+            <div class="person-inner">
+              <img src="mildred-allen.jpg" alt="Mildred Allen" class="person-photo" />
+              <div class="person-main">
+                <div class="person-name">Mildred Allen</div>
+                <div class="person-role">Daughter of Wylie &amp; Cora</div>
+                <div class="person-years">[Birth year – Death year]</div>
+                <div class="person-notes">One of the children of Wylie and Cora. [Add spouse, place of residence, and notes.]</div>
+              </div>
+
+              <details class="records-details">
+                <summary>Records &amp; Documents</summary>
+                <div class="record-tags">
+                  <span class="record-tag" title="Census">📊</span>
+                  <span class="record-tag" title="Birth certificate">🍼</span>
+                  <span class="record-tag" title="Marriage record">💍</span>
+                  <span class="record-tag" title="Death / obituary">🪦</span>
+                  <span class="record-tag" title="Military record">🪖</span>
+                  <span class="record-tag" title="Land / deed">📜</span>
+                  <span class="record-tag" title="Newspaper clipping">📰</span>
+                  <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+                </div>
+                <ul>
+                  <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                  <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                  <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                  <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                  <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                  <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                  <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                  <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Example child – Austin -->
+          <article class="person-card">
+            <div class="person-inner">
+              <img src="austin-allen.jpg" alt="Austin Allen" class="person-photo" />
+              <div class="person-main">
+                <div class="person-name">Austin Allen</div>
+                <div class="person-role">Son of Wylie &amp; Cora</div>
+                <div class="person-years">[Birth year – Death year]</div>
+                <div class="person-notes">One of the children of Wylie and Cora. [Add spouse and children.]</div>
+              </div>
+
+              <details class="records-details">
+                <summary>Records &amp; Documents</summary>
+                <div class="record-tags">
+                  <span class="record-tag" title="Census">📊</span>
+                  <span class="record-tag" title="Birth certificate">🍼</span>
+                  <span class="record-tag" title="Marriage record">💍</span>
+                  <span class="record-tag" title="Death / obituary">🪦</span>
+                  <span class="record-tag" title="Military record">🪖</span>
+                  <span class="record-tag" title="Land / deed">📜</span>
+                  <span class="record-tag" title="Newspaper clipping">📰</span>
+                  <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+                </div>
+                <ul>
+                  <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                  <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                  <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                  <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                  <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                  <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                  <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                  <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Example child – Sarah Lee (Monger) -->
+          <article class="person-card">
+            <div class="person-inner">
+              <img src="sarah-lee-monger.jpg" alt="Sarah Lee Monger" class="person-photo" />
+              <div class="person-main">
+                <div class="person-name">Sarah Lee Allen (Monger)</div>
+                <div class="person-role">Daughter of Wylie &amp; Cora</div>
+                <div class="person-years">June 3, 1935 – Present</div>
+                <div class="person-notes">Later appears again below as a Grandmother in Generation 3.</div>
+              </div>
+
+              <details class="records-details">
+                <summary>Records &amp; Documents</summary>
+                <div class="record-tags">
+                  <span class="record-tag" title="Census">📊</span>
+                  <span class="record-tag" title="Birth certificate">🍼</span>
+                  <span class="record-tag" title="Marriage record">💍</span>
+                  <span class="record-tag" title="Death / obituary">🪦</span>
+                  <span class="record-tag" title="Military record">🪖</span>
+                  <span class="record-tag" title="Land / deed">📜</span>
+                  <span class="record-tag" title="Newspaper clipping">📰</span>
+                  <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+                </div>
+                <ul>
+                  <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                  <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                  <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                  <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                  <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                  <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                  <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                  <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Example child – Deloris -->
+          <article class="person-card">
+            <div class="person-inner">
+              <img src="deloris-allen.jpg" alt="Deloris Allen" class="person-photo" />
+              <div class="person-main">
+                <div class="person-name">Deloris Allen</div>
+                <div class="person-role">Daughter of Wylie &amp; Cora</div>
+                <div class="person-years">[Birth year – Death year]</div>
+                <div class="person-notes">One of the children of Wylie and Cora. [Add more detail and children.]</div>
+              </div>
+
+              <details class="records-details">
+                <summary>Records &amp; Documents</summary>
+                <div class="record-tags">
+                  <span class="record-tag" title="Census">📊</span>
+                  <span class="record-tag" title="Birth certificate">🍼</span>
+                  <span class="record-tag" title="Marriage record">💍</span>
+                  <span class="record-tag" title="Death / obituary">🪦</span>
+                  <span class="record-tag" title="Military record">🪖</span>
+                  <span class="record-tag" title="Land / deed">📜</span>
+                  <span class="record-tag" title="Newspaper clipping">📰</span>
+                  <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+                </div>
+                <ul>
+                  <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                  <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                  <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                  <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                  <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                  <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                  <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                  <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Generation 3 – Grandparents -->
+    <section class="generation">
+      <h2>Generation 3 – Grandparents</h2>
+      <div class="generation-label">This generation shows the grandparents of Crystal and her siblings.</div>
+
+      <div class="person-grid">
+        <!-- GRANDMOTHER: Sarah Lee Monger -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="sarah-lee-monger.jpg" alt="Sarah Lee Monger" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Sarah Lee Monger</div>
+              <div class="person-role">Grandmother</div>
+              <div class="person-years">June 3, 1935 – Present</div>
+              <div class="person-notes">Daughter of Wylie Allen and Cora “Harriet” Worrell. [Add her biography here.]</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <!-- GRANDFATHER: Archie Timmons -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="archie-timmons.jpg" alt="Archie Timmons" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Archie Timmons</div>
+              <div class="person-role">Grandfather</div>
+              <div class="person-years">February 2, 1934 – February 2023</div>
+              <div class="person-notes">Son of <strong>Lillie Mae Timmons</strong> and <strong>Archie Timmons Sr.</strong>. Partner of Sarah Lee Monger. [Add his biography here.]</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Generation 4 – Parents -->
+    <section class="generation">
+      <h2>Generation 4 – Parents</h2>
+      <div class="generation-label">This generation shows the parents of Crystal and her siblings.</div>
+
+      <div class="person-grid">
+        <!-- ANDREA ALLEN -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="andrea-allen.jpg" alt="Andrea Allen" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Andrea Allen</div>
+              <div class="person-role">Mother</div>
+              <div class="person-years">January 29, 1952 – Present</div>
+              <div class="person-notes">Born in Suffolk, VA. Daughter of Sarah Lee Monger and Archie Timmons. [Add her biography here.]</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <!-- WAVELL ANTHONY BARNES -->
+        <article class="person-card">
+          <div class="person-inner">
+            <img src="wavell-anthony-barnes.jpg" alt="Wavell Anthony Barnes" class="person-photo" />
+            <div class="person-main">
+              <div class="person-name">Wavell Anthony Barnes</div>
+              <div class="person-role">Father</div>
+              <div class="person-years">October 15, 1945 – 2008</div>
+              <div class="person-notes">Partner of Andrea Allen. [Add his biography here.]</div>
+            </div>
+
+            <details class="records-details">
+              <summary>Records &amp; Documents</summary>
+              <div class="record-tags">
+                <span class="record-tag" title="Census">📊</span>
+                <span class="record-tag" title="Birth certificate">🍼</span>
+                <span class="record-tag" title="Marriage record">💍</span>
+                <span class="record-tag" title="Death / obituary">🪦</span>
+                <span class="record-tag" title="Military record">🪖</span>
+                <span class="record-tag" title="Land / deed">📜</span>
+                <span class="record-tag" title="Newspaper clipping">📰</span>
+                <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+              </div>
+              <ul>
+                <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+
+      <details class="children-block" style="margin-top: 1rem;">
+        <summary>Children of Andrea &amp; Wavell</summary>
+        <div class="person-grid" style="margin-top: 0.75rem;">
+          <!-- CHILD: Crystal Allen Smith Burns -->
+          <article class="person-card">
+            <div class="person-inner">
+              <img src="crystal-allen-smith-burns.jpg" alt="Crystal Allen Smith Burns" class="person-photo" />
+              <div class="person-main">
+                <div class="person-name">Crystal Allen Smith Burns</div>
+                <div class="person-role">Child of Andrea &amp; Wavell</div>
+                <div class="person-years">August 25, 1971 – Present</div>
+                <div class="person-notes">[Add Crystal’s biography here.]</div>
+              </div>
+
+              <details class="records-details">
+                <summary>Records &amp; Documents</summary>
+                <div class="record-tags">
+                  <span class="record-tag" title="Census">📊</span>
+                  <span class="record-tag" title="Birth certificate">🍼</span>
+                  <span class="record-tag" title="Marriage record">💍</span>
+                  <span class="record-tag" title="Death / obituary">🪦</span>
+                  <span class="record-tag" title="Military record">🪖</span>
+                  <span class="record-tag" title="Land / deed">📜</span>
+                  <span class="record-tag" title="Newspaper clipping">📰</span>
+                  <span class="record-tag" title="File uploaded (PDF/image)">📎</span>
+                </div>
+                <ul>
+                  <li>📊 <strong>Census:</strong> [Year, place, household details]</li>
+                  <li>🍼 <strong>Birth:</strong> [Certificate, register, or church record]</li>
+                  <li>💍 <strong>Marriage:</strong> [Date, place, spouse]</li>
+                  <li>🪦 <strong>Death / obituary:</strong> [Death certificate or obituary details]</li>
+                  <li>🪖 <strong>Military:</strong> [Draft card, service record, pension, etc.]</li>
+                  <li>📜 <strong>Land / deed:</strong> [Property, land, or tax records]</li>
+                  <li>📰 <strong>Newspaper:</strong> [Articles or clippings, dates, and headlines]</li>
+                  <li>📎 <strong>Uploaded file link:</strong> <a href="#">[Paste link to PDF or image stored online]</a></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Add siblings here as additional person-cards if needed -->
+        </div>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
