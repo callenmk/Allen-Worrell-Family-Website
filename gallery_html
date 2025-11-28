@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Family Photo Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --accent: #374151;
+      --accent-soft: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #e5e7eb, #f9fafb 40%, #f3f4f6);
+      color: var(--text-main);
+      padding: 2rem 1rem 3rem;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 3vw, 2.5rem);
+      margin: 0 0 0.25rem;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hint {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .gallery-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      backdrop-filter: blur(14px);
+    }
+
+    details {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 0.9rem;
+      border: 1px solid var(--accent-soft);
+      overflow: hidden;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    details[open] {
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+      transform: translateY(-1px);
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .summary-title {
+      font-size: 0.98rem;
+    }
+
+    .summary-right {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .summary-right span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .summary-right span::after {
+      content: "▾";
+      font-size: 0.7rem;
+    }
+
+    .section-body {
+      border-top: 1px solid var(--accent-soft);
+      padding: 0.75rem 1.1rem 1.1rem;
+      background: #f9fafb;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .photo-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 0.5rem;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+        border-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+      border-color: #d1d5db;
+    }
+
+    .photo-card img {
+      width: 100%;
+      border-radius: 14px;
+      object-fit: cover;
+      max-height: 180px;
+    }
+
+    .photo-caption {
+      font-size: 0.8rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .photo-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem 0.75rem 2rem;
+      }
+
+      .gallery-section {
+        padding: 1.1rem;
+      }
+
+      summary {
+        padding: 0.8rem 0.9rem;
+      }
+
+      .section-body {
+        padding: 0.7rem 0.9rem 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Family Photo Gallery</h1>
+      <p>Organized by person and special occasions</p>
+      <p class="hint">
+        Tip: Upload your images to an <code>images/</code> folder in your GitHub repo,
+        then update the <code>src</code> and captions below.
+      </p>
+    </header>
+
+    <main class="gallery-section">
+      <!-- 1. Baby Pictures -->
+      <details open>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">1</div>
+            <div class="summary-title">Baby Pictures</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <!-- EXAMPLE baby picture item -->
+            <figure class="photo-card">
+              <img src="images/baby-1.jpg" alt="Baby picture example" />
+              <figcaption class="photo-caption">Baby picture – example</figcaption>
+              <div class="photo-meta">Add date / notes here</div>
+            </figure>
+            <!-- Duplicate this block and change src / caption for more baby photos -->
+          </div>
+        </div>
+      </details>
+
+      <!-- 2. Alice Virginia Baker Worrell -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">2</div>
+            <div class="summary-title">Alice Virginia Baker Worrell</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/alice-1.jpg" alt="Alice Virginia Baker Worrell" />
+              <figcaption class="photo-caption">Alice Virginia – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 3. Cora -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">3</div>
+            <div class="summary-title">Cora</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/cora-1.jpg" alt="Cora" />
+              <figcaption class="photo-caption">Cora – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 4. Wylie -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">4</div>
+            <div class="summary-title">Wylie</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/wylie-1.jpg" alt="Wylie" />
+              <figcaption class="photo-caption">Wylie – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 6. Sarah -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">6</div>
+            <div class="summary-title">Sarah</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/sarah-1.jpg" alt="Sarah" />
+              <figcaption class="photo-caption">Sarah – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 6. Andrea -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">6</div>
+            <div class="summary-title">Andrea</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/andrea-1.jpg" alt="Andrea" />
+              <figcaption class="photo-caption">Andrea – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 7. Crystal Burns -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">7</div>
+            <div class="summary-title">Crystal Burns</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/crystal-1.jpg" alt="Crystal Burns" />
+              <figcaption class="photo-caption">Crystal – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 8. Tex Burns -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">8</div>
+            <div class="summary-title">Tex Burns</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/tex-1.jpg" alt="Tex Burns" />
+              <figcaption class="photo-caption">Tex – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 9. Joshua Smith -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">9</div>
+            <div class="summary-title">Joshua Smith</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/joshua-1.jpg" alt="Joshua Smith" />
+              <figcaption class="photo-caption">Joshua – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 10. Jayda Smith -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">10</div>
+            <div class="summary-title">Jayda Smith</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/jayda-1.jpg" alt="Jayda Smith" />
+              <figcaption class="photo-caption">Jayda – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 11. Smack -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">11</div>
+            <div class="summary-title">Smack</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/smack-1.jpg" alt="Smack" />
+              <figcaption class="photo-caption">Smack – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 12. Mary Virginia -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">12</div>
+            <div class="summary-title">Mary Virginia</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/mary-1.jpg" alt="Mary Virginia" />
+              <figcaption class="photo-caption">Mary Virginia – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 13. Buck -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">13</div>
+            <div class="summary-title">Buck</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/buck-1.jpg" alt="Buck" />
+              <figcaption class="photo-caption">Buck – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 14. Holidays -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">14</div>
+            <div class="summary-title">Holidays</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/holidays-1.jpg" alt="Holiday gathering" />
+              <figcaption class="photo-caption">Holiday – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 15. Reunions -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">15</div>
+            <div class="summary-title">Reunions</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/reunion-1.jpg" alt="Family reunion" />
+              <figcaption class="photo-caption">Reunion – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 16. Austin Jordan -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">16</div>
+            <div class="summary-title">Austin Jordan</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/austin-1.jpg" alt="Austin Jordan" />
+              <figcaption class="photo-caption">Austin – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 17. Prenell Jordan -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">17</div>
+            <div class="summary-title">Prenell Jordan</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/prenell-1.jpg" alt="Prenell Jordan" />
+              <figcaption class="photo-caption">Prenell – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 18. Deloris Jordan Hubbard -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">18</div>
+            <div class="summary-title">Deloris Jordan Hubbard</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/deloris-1.jpg" alt="Deloris Jordan Hubbard" />
+              <figcaption class="photo-caption">Deloris – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 19. Gregory Hubbard -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">19</div>
+            <div class="summary-title">Gregory Hubbard</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/gregory-1.jpg" alt="Gregory Hubbard" />
+              <figcaption class="photo-caption">Gregory – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 20. Vera Williams -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">20</div>
+            <div class="summary-title">Vera Williams</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/vera-1.jpg" alt="Vera Williams" />
+              <figcaption class="photo-caption">Vera – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 21. Courtney Williams -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">21</div>
+            <div class="summary-title">Courtney Williams</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/courtney-1.jpg" alt="Courtney Williams" />
+              <figcaption class="photo-caption">Courtney – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 22. Mildred Bazemore -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">22</div>
+            <div class="summary-title">Mildred Bazemore</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/mildred-1.jpg" alt="Mildred Bazemore" />
+              <figcaption class="photo-caption">Mildred – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <!-- 23. Daryl Williams -->
+      <details>
+        <summary>
+          <div class="summary-left">
+            <div class="badge">23</div>
+            <div class="summary-title">Daryl Williams</div>
+          </div>
+          <div class="summary-right">
+            <span>Click to show / hide</span>
+          </div>
+        </summary>
+        <div class="section-body">
+          <div class="photo-grid">
+            <figure class="photo-card">
+              <img src="images/daryl-1.jpg" alt="Daryl Williams" />
+              <figcaption class="photo-caption">Daryl – example</figcaption>
+              <div class="photo-meta">Description / year</div>
+            </figure>
+          </div>
+        </div>
+      </details>
+    </main>
+  </div>
+</body>
+</html>
